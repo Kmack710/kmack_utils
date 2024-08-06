@@ -7,6 +7,7 @@ version '0.1.0'
 
 files {
 	'config.lua',
+    'locales.lua',
     'modules/**/*.lua',
 }
 

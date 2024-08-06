@@ -5,6 +5,9 @@ Config = {
     },
     VehicleKeys = {
         enabled = true,
+        keybind = 'U', -- keybind to lock/unlock vehicle
+        disableAutoOnOff = true, -- disables auto on/off for vehicles
+        engineToggle = 'G',
     },
     xpSystem = {
         enabled = true,
@@ -16,7 +19,7 @@ Config = {
         keepPlateInGarage = true,
         --- Keeping the plate in garage requires adding an export to your garage resource
         --- see the docs for info on how to do this.       
-        fakePlateRemoval = true,
+        fakePlateRemoval = true, --- by a job or item below
         RemovalJob = 'police',
         RemovalItem = 'fscrewdriver',
     },
