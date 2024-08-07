@@ -7,7 +7,15 @@ Config = {
         enabled = true,
         keybind = 'U', -- keybind to lock/unlock vehicle
         disableAutoOnOff = true, -- disables auto on/off for vehicles
-        engineToggle = 'G',
+        lockAllLocalVehicles = true, -- lock all vehicles 
+        engineToggle = 'G', --- engine off/on key
+        carjackingAlertChance = 10, -- percent chance of alerting police when carjacking set 0 for none
+        advancedLockpick = 'advancedlockpick', -- Item name or false for just normal lockpicks
+        lockpickItem = 'lockpick', -- Item name (required)
+        lockpickDiff = 'easy', -- easy, medium, hard
+        hotwireDiff = 'easy', -- easy, medium, hard
+        chanceToRemoveLockpick = 50, -- percent chance to remove lockpick on fails
+        chanceToRemoveAdvLockpick = 5, -- percent chance to remove advanced lockpick on fails
     },
     xpSystem = {
         enabled = true,

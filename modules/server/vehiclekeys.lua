@@ -3,6 +3,7 @@ print('^4 [kmack_lib] ^4Loaded Vehicle Keys System^7')
 local Config = require "config"
 local vehicleKeys = {}
 local Bridge = exports.kmack_bridge:GetBridge()
+local Utils = require 'modules.server.utils'
 --- vehicleKeys[plate] = {Pid,Pid,Pid} --- holds all the keyholders for a plate
 
 local function hasKeys(source, plate)
@@ -16,7 +17,6 @@ local function hasKeys(source, plate)
     end
     return false
 end
-exports('hasKeys', hasKeys)
 
 lib.callback.register('kmack_lib:vehicleKeys:hasKeys', function(source, plate)
     return hasKeys(source, plate)
@@ -51,7 +51,6 @@ local function giveKeysPerm(source, plate)
         })
     end
 end
-exports('giveKeysPerm', giveKeysPerm)
 
 local function giveKeys(source, plate)
     local Player = Bridge.Framework.PlayerDataS(source)
@@ -60,7 +59,11 @@ local function giveKeys(source, plate)
     end
     table.insert(vehicleKeys[plate], Player.Pid)
 end
-exports('giveKeys', giveKeys)
+
+RegisterNetEvent('kmack_lib:vehicleKeys:giveKeys', function(plate)
+    local source = source
+    giveKeys(source, plate)
+end)
 
 lib.addCommand(Locales.Commands.GiveKeys, {
     help = Locales.VehicleKeys.GiveKeysDesc,
@@ -115,9 +118,74 @@ local function removeKeys(source, plate)
         ['@keyholders'] = json.encode(currentDBKeys)
     })
 end
+
+
+RegisterNetEvent('kmack_lib:vehicleKeys:carJackingAlert', function()
+    local random = math.random(1, 100)
+    if random > Config.VehicleKeys.carjackingAlertChance then
+        return
+    end
+    local source = source
+    local title = Locales.Dispatch.CarJackingTitle
+    local code = Locales.Dispatch.CarJackingCode
+    local message = Locales.Dispatch.CarJackingMessage
+    Utils.SendDispatch(source, title, code, message)
+end)
+
+RegisterNetEvent('kmack_lib:vehicleKeys:failedLockpick', function(advLockpick)
+    local source = source
+    local randomChance = math.random(1, 100)
+    if advLockpick then
+        if randomChance <= Config.VehicleKeys.advLockpickBreakChance then
+            Bridge.Inventory.RemoveItem(source, Config.VehicleKeys.advLockpickItem, 1)
+        end
+    else
+        if randomChance <= Config.VehicleKeys.lockpickBreakChance then
+            Bridge.Inventory.RemoveItem(source, Config.VehicleKeys.lockpickItem, 1)
+        end
+    end
+end)
+
+if Config.VehicleKeys.lockAllLocalVehicles then
+    AddEventHandler('entityCreated', function(entity)
+        CreateThread(function()
+            if not DoesEntityExist(entity) then
+                return
+            end
+            local entityType = GetEntityType(entity)
+            if entityType ~= 2 then
+                return
+            end
+            if GetEntityPopulationType(entity) > 5 then
+                return
+            end
+            if math.random(1,100) > 80 then
+                return
+            end
+            SetVehicleDoorsLocked(entity, 2)
+        end)
+    end)
+end
+
+
+--- since not all inventories allow us to item check on client
+lib.callback.register('kmack_lib:hasLockpick', function(source)
+    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.lockpickItem)
+end)
+lib.callback.register('kmack_lib:hasAdvancedLockpick', function(source)
+    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.advLockpickItem)
+end)
+
+if Bridge.Config.InventoryScript ~= 'ox' then --- if ox_inventory export its covered in the items.md
+    Bridge.Framework.CreateUseableItem(Config.VehicleKeys.lockpickItem, function(source, item)
+        TriggerClientEvent('kmack_lib:vehicleKeys:tryVehLockpick', source)
+    end)
+end
+--- Exports --- 
 exports('removeKeys', removeKeys)
-
-
-
+exports('hasKeys', hasKeys)
+exports('giveKeys', giveKeys)
+exports('giveKeysPerm', giveKeysPerm)
+--- Exports --- 
 
 MySQL.query('CREATE TABLE IF NOT EXISTS kmack_vehpermkeys (plate VARCHAR(10), keyholders LONGTEXT)')
