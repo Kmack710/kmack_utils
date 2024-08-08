@@ -8,7 +8,7 @@ Config = {
         keybind = 'U', -- keybind to lock/unlock vehicle
         disableAutoOnOff = true, -- disables auto on/off for vehicles
         lockAllLocalVehicles = true, -- lock all vehicles 
-        engineToggle = 'G', --- engine off/on key
+        engineToggle = 'G', --- engine off/on key (this is just default, each client can change in fivem keybinds after)
         carjackingAlertChance = 10, -- percent chance of alerting police when carjacking set 0 for none
         advancedLockpick = 'advancedlockpick', -- Item name or false for just normal lockpicks
         lockpickItem = 'lockpick', -- Item name (required)
@@ -19,7 +19,7 @@ Config = {
     },
     xpSystem = {
         enabled = true,
-        hideCriminalXpFromJobs = true, --- hides criminal xp from jobs listed below
+        hideCriminalXpFromJobs = false, --- hides criminal xp from jobs listed below
         nonCriminalJobs = {'police', 'ambulance', 'judge', 'sheriff'},
         --- if enabled look at modules/shared/xpSystem.lua
         --- to add ranks / new xp levels
@@ -30,7 +30,7 @@ Config = {
         --- Keeping the plate in garage requires adding an export to your garage resource
         --- see the docs for info on how to do this.       
         fakePlateRemoval = true, --- by a job or item below
-        RemovalJobs ={'police', 'sheriff'},
+        RemovalJobs = {'police', 'sheriff'},
         RemovalItem = 'fscrewdriver',
     },
     Elevators = { --- Simple elevator system with fade in/out

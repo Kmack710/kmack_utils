@@ -1,4 +1,4 @@
---- Utils used in all modules, put here so its easier for people to edit/change them
+--- Utils used in modules, put here so its easier for people to edit/change them
 local Utils = {}
 local Bridge = exports.kmack_bridge:GetBridge()
 function Utils.SkillBarMinigame(diff, isAdv)

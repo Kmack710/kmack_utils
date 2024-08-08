@@ -62,6 +62,27 @@ local xpConfig = {
             [10] = 'Fishing King',
         }
     },
+    ['Criminal'] = {
+        xpImage = 'https://www.shareicon.net/data/2016/07/09/118415_user_512x512.png',
+        maxLevel = 10,
+        xpPerLevel = 500,
+        doubleXpReqPerLevel = true,
+        notifyOnLevelUp = true,
+        criminal = true,
+        ranks = {
+            [0] = 'No Rank',
+            [1] = 'Petty Criminal',
+            [2] = 'Thug',
+            [3] = 'Gangster',
+            [4] = 'Mobster',
+            [5] = 'Crime Lord',
+            [6] = 'Mastermind',
+            [7] = 'Kingpin',
+            [8] = 'Crime Boss',
+            [9] = 'Criminal Overlord',
+            [10] = 'Criminal King',
+        }
+    }
     ---- Garbage, fishing, hunting
 
 }

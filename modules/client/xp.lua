@@ -11,8 +11,6 @@ local function GetXpLevel(xptype)
     return lib.callback.await('kmack_lib:getXpLevel', false, xptype)
 end
 
-exports('GetXpLevel', GetXpLevel)
-
 local function convertXpToPercent(xptype, xp)
     -- check for if xp doubles per level then figure out what the % of the current level they are away from the next
     local xpDoublesAmountPerLevel = xpConfig[xptype].doubleXpReqPerLevel
@@ -108,3 +106,5 @@ RegisterNetEvent('kmack_lib:xp:menu', function()
     }))
     lib.showContext('xpMenu'..Player.Pid)
 end)
+
+exports('GetXpLevel', GetXpLevel)
