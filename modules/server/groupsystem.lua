@@ -1,1 +1,1 @@
-print('^4 [kmack_lib] ^6Loaded Group System^7')
+print('^4 [kmack_utils] ^6Loaded Group System^7')

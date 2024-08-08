@@ -2,10 +2,10 @@ local Config = require 'config'
 local Bridge = exports.kmack_bridge:GetBridge()
 local Locales = require 'locales'
 local Utils = require 'modules.client.utils'
---- kmack_lib:vehicleKeys:hasKeys
+--- kmack_utils:vehicleKeys:hasKeys
 
 local function hasKeys(plate)
-    return lib.callback.await('kmack_lib:vehicleKeys:hasKeys', false, plate)
+    return lib.callback.await('kmack_utils:vehicleKeys:hasKeys', false, plate)
 end
 
 RegisterKeyMapping('+vehlock', 'Lock / Unlock Vehicle', 'keyboard', Config.VehicleKeys.keybind)
@@ -15,8 +15,8 @@ RegisterCommand('+engine', function()
     local Player = Bridge.Framework.PlayerDataC()
     local pedCoords = GetEntityCoords(cache.ped)
     local vehicle, vehcoords = lib.getClosestVehicle(pedCoords, 1, true)
-    local hasLockpick = lib.callback.await('kmack_lib:hasLockpick', false)
-    local hasAdvLockpick = lib.callback.await('kmack_lib:hasAdvancedLockpick', false)
+    local hasLockpick = lib.callback.await('kmack_utils:hasLockpick', false)
+    local hasAdvLockpick = lib.callback.await('kmack_utils:hasAdvancedLockpick', false)
     
     if vehicle ~= 0 then
         if GetPedInVehicleSeat(vehicle, -1) ~= cache.ped then return end
@@ -35,7 +35,7 @@ RegisterCommand('+engine', function()
               if success then
                  Bridge.Noti.Success(Locales.VehicleKeys.Hotwired)
                  SetVehicleEngineOn(vehicle, true, false, true)
-                 TriggerServerEvent('kmack_lib:vehicleKeys:giveKeys', plate)
+                 TriggerServerEvent('kmack_utils:vehicleKeys:giveKeys', plate)
               else
                  Bridge.Noti.Error(Locales.VehicleKeys.HotwireFail)
               end
@@ -93,8 +93,8 @@ local function tryVehLockpick()
         Bridge.Noti.Error(Locales.VehicleKeys.AlreadyHasKey)
         return
     end
-    local hasLockpick = lib.callback.await('kmack_lib:hasLockpick', false)
-    local hasAdvLockpick = lib.callback.await('kmack_lib:hasAdvancedLockpick', false)
+    local hasLockpick = lib.callback.await('kmack_utils:hasLockpick', false)
+    local hasAdvLockpick = lib.callback.await('kmack_utils:hasAdvancedLockpick', false)
     if hasLockpick or hasAdvLockpick then
         CreateThread(function()
             --- lockpick animation without props for time above 
@@ -114,7 +114,7 @@ local function tryVehLockpick()
             SetVehicleDoorsLocked(nearbyVeh, 0)
             TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, 'lock', 0.5)
         else
-            TriggerServerEvent('kmack_lib:vehicleKeys:failedLockpick', hasAdvLockpick)
+            TriggerServerEvent('kmack_utils:vehicleKeys:failedLockpick', hasAdvLockpick)
             Bridge.Noti.Error(Locales.VehicleKeys.LockpickFailed)
         end
     else
@@ -123,7 +123,7 @@ local function tryVehLockpick()
 
 end
 
-RegisterNetEvent('kmack_lib:vehicleKeys:tryVehLockpick', function()
+RegisterNetEvent('kmack_utils:vehicleKeys:tryVehLockpick', function()
     tryVehLockpick()
 end)
 

@@ -1,5 +1,5 @@
 local Locales = require "locales"
-print('^4 [kmack_lib] ^4Loaded Vehicle Keys System^7')
+print('^4 [kmack_utils] ^4Loaded Vehicle Keys System^7')
 local Config = require "config"
 local vehicleKeys = {}
 local Bridge = exports.kmack_bridge:GetBridge()
@@ -18,7 +18,7 @@ local function hasKeys(source, plate)
     return false
 end
 
-lib.callback.register('kmack_lib:vehicleKeys:hasKeys', function(source, plate)
+lib.callback.register('kmack_utils:vehicleKeys:hasKeys', function(source, plate)
     return hasKeys(source, plate)
 end)
 
@@ -60,7 +60,7 @@ local function giveKeys(source, plate)
     table.insert(vehicleKeys[plate], Player.Pid)
 end
 
-RegisterNetEvent('kmack_lib:vehicleKeys:giveKeys', function(plate)
+RegisterNetEvent('kmack_utils:vehicleKeys:giveKeys', function(plate)
     local source = source
     giveKeys(source, plate)
 end)
@@ -120,7 +120,7 @@ local function removeKeys(source, plate)
 end
 
 
-RegisterNetEvent('kmack_lib:vehicleKeys:carJackingAlert', function()
+RegisterNetEvent('kmack_utils:vehicleKeys:carJackingAlert', function()
     local random = math.random(1, 100)
     if random > Config.VehicleKeys.carjackingAlertChance then
         return
@@ -132,7 +132,7 @@ RegisterNetEvent('kmack_lib:vehicleKeys:carJackingAlert', function()
     Utils.SendDispatch(source, title, code, message)
 end)
 
-RegisterNetEvent('kmack_lib:vehicleKeys:failedLockpick', function(advLockpick)
+RegisterNetEvent('kmack_utils:vehicleKeys:failedLockpick', function(advLockpick)
     local source = source
     local randomChance = math.random(1, 100)
     if advLockpick then
@@ -169,16 +169,16 @@ end
 
 
 --- since not all inventories allow us to item check on client
-lib.callback.register('kmack_lib:hasLockpick', function(source)
+lib.callback.register('kmack_utils:hasLockpick', function(source)
     return Bridge.Inventory.HasItem(source, Config.VehicleKeys.lockpickItem, 1)
 end)
-lib.callback.register('kmack_lib:hasAdvancedLockpick', function(source)
+lib.callback.register('kmack_utils:hasAdvancedLockpick', function(source)
     return Bridge.Inventory.HasItem(source, Config.VehicleKeys.advLockpickItem, 1)
 end)
 
 if Bridge.Config.InventoryScript ~= 'ox' then --- if ox_inventory export its covered in the items.md
     Bridge.Framework.CreateUseableItem(Config.VehicleKeys.lockpickItem, function(source, item)
-        TriggerClientEvent('kmack_lib:vehicleKeys:tryVehLockpick', source)
+        TriggerClientEvent('kmack_utils:vehicleKeys:tryVehLockpick', source)
     end)
 end
 --- Exports --- 

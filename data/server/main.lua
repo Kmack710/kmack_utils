@@ -14,9 +14,9 @@ if Config.xpSystem.enabled then
     require 'modules.server.xp'
 end
 if Config.Elevators.enabled then
-    print('^4 [kmack_lib] ^5Loaded Elevators System^7')
+    print('^4 [kmack_utils] ^5Loaded Elevators System^7')
     --- Elevators is all client sided, so we dont need to load anything on server, but put this here so it shows with other prints
 end
-if lib.versionCheck('Kmack710/kmack_lib') ~= 'v1.0.0' then
-    print('^4 [kmack_lib] ^1WARNING: You are not using the latest version of kmack_lib, please update it!^7')
+if lib.versionCheck('Kmack710/kmack_utils') ~= 'v1.0.0' then
+    print('^4 [kmack_utils] ^1WARNING: You are not using the latest version of kmack_utils, please update it!^7')
 end

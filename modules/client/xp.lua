@@ -4,11 +4,11 @@ local Locales = require 'locales'
 local Bridge = exports.kmack_bridge:GetBridge()
 
 AddEventHandler('kmack_bridge:playerLoaded', function()
-    TriggerServerEvent('kmack_lib:initXP') --- Get current xp and add any new xps if any added.
+    TriggerServerEvent('kmack_utils:initXP') --- Get current xp and add any new xps if any added.
 end)
 
 local function GetXpLevel(xptype)
-    return lib.callback.await('kmack_lib:getXpLevel', false, xptype)
+    return lib.callback.await('kmack_utils:getXpLevel', false, xptype)
 end
 
 local function convertXpToPercent(xptype, xp)
@@ -53,9 +53,9 @@ local function checkIfHasJobFromConfig(job)
     return false
 end
 
-RegisterNetEvent('kmack_lib:xp:menu', function()
+RegisterNetEvent('kmack_utils:xp:menu', function()
     local Player = Bridge.Framework.PlayerDataC()
-    local myXPData = lib.callback.await('kmack_lib:getMyXpData', false)
+    local myXPData = lib.callback.await('kmack_utils:getMyXpData', false)
     local menuOptions = {}
     print(Player.Job.name)
     for k,v in pairs(myXPData) do

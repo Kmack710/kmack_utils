@@ -1,10 +1,10 @@
-print('^4 [kmack_lib] ^2Loaded XP System^7')
+print('^4 [kmack_utils] ^2Loaded XP System^7')
 local xpConfig = require 'modules.shared.xpSystem'
 local Config = require 'config'
 local Bridge = exports.kmack_bridge:GetBridge()
 local Locales = require 'locales'
 
-RegisterNetEvent('kmack_lib:initXP', function()
+RegisterNetEvent('kmack_utils:initXP', function()
     local source = source
     local Player = Bridge.Framework.PlayerDataS(source)
     local Pid = Player.Pid
@@ -28,7 +28,7 @@ RegisterNetEvent('kmack_lib:initXP', function()
                 ['@data'] = json.encode(currentXPdata)
             })
         end
-        print('^4 [kmack_lib] ^2Loaded XP Data for'..Player.Name..'^7')
+        print('^4 [kmack_utils] ^2Loaded XP Data for'..Player.Name..'^7')
     else
         for k,v in pairs(xpConfig) do
             currentXPdata[k] = {level = 0, xp = 0}
@@ -37,14 +37,14 @@ RegisterNetEvent('kmack_lib:initXP', function()
             ['@pid'] = Pid,
             ['@data'] = json.encode(currentXPdata)
         })
-        print('^4 [kmack_lib] ^2Created XP Data for'..Player.Name..'^7')
+        print('^4 [kmack_utils] ^2Created XP Data for'..Player.Name..'^7')
     end
 end)
 
 local function getLevelFromXP(xp, xptype)
     local level = 0
     if xpConfig[xptype] == nil then 
-        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        print('^4 [kmack_utils] ^1Error: ^7'..xptype..' is not a valid xp type')
         return false
     end
     local xpNeededPerLevel = xpConfig[xptype].xpPerLevel
@@ -75,7 +75,7 @@ local function AddXp(source, xptype, amount)
     local Pid = Player.Pid
     local currentXPdata = {}
     if xpConfig[xptype] == nil then 
-        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        print('^4 [kmack_utils] ^1Error: ^7'..xptype..' is not a valid xp type')
         return false
     end
     local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
@@ -113,7 +113,7 @@ local function RemoveXp(source, xptype, amount)
     local Pid = Player.Pid
     local currentXPdata = {}
     if xpConfig[xptype] == nil then 
-        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        print('^4 [kmack_utils] ^1Error: ^7'..xptype..' is not a valid xp type')
         return
     end
     local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
@@ -147,7 +147,7 @@ local function GetXpLevel(source, xptype)
     local Pid = Player.Pid
     local currentXPdata = {}
     if xpConfig[xptype] == nil then 
-        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        print('^4 [kmack_utils] ^1Error: ^7'..xptype..' is not a valid xp type')
         return 0
     end
     local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
@@ -164,10 +164,10 @@ local function GetXpLevel(source, xptype)
     return 0
 end
 
-lib.callback.register('kmack_lib:getXpLevel', function(source, xptype)
+lib.callback.register('kmack_utils:getXpLevel', function(source, xptype)
     return GetXpLevel(source, xptype)
 end)
-lib.callback.register('kmack_lib:getMyXpData', function(source)
+lib.callback.register('kmack_utils:getMyXpData', function(source)
     local Player = Bridge.Framework.PlayerDataS(source)
     local Pid = Player.Pid
     local currentXPdata = {}
@@ -190,7 +190,7 @@ exports('GetXpLevel', GetXpLevel)
 lib.addCommand(Locales.XpSystem.OpenXpMenu, {
     help = Locales.XpSystem.OpenXpMenuDesc,
 }, function(source, args, raw)
-    TriggerClientEvent('kmack_lib:xp:menu', source)
+    TriggerClientEvent('kmack_utils:xp:menu', source)
 end)
 
 
