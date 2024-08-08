@@ -13,11 +13,13 @@ RegisterKeyMapping('+engine', 'Toggle Engine', 'keyboard', Config.VehicleKeys.en
 
 RegisterCommand('+engine', function()
     local Player = Bridge.Framework.PlayerDataC()
-    local pedCoords = GetEntityCoords(PlayerPedId())
+    local pedCoords = GetEntityCoords(cache.ped)
     local vehicle, vehcoords = lib.getClosestVehicle(pedCoords, 1, true)
     local hasLockpick = lib.callback.await('kmack_lib:hasLockpick', false)
     local hasAdvLockpick = lib.callback.await('kmack_lib:hasAdvancedLockpick', false)
+    
     if vehicle ~= 0 then
+        if GetPedInVehicleSeat(vehicle, -1) ~= cache.ped then return end
         local plate = GetVehicleNumberPlateText(vehicle)
         if hasKeys(plate) then
             local engine = GetIsVehicleEngineRunning(vehicle)
@@ -46,7 +48,7 @@ end, false)
 
 RegisterCommand('+vehlock', function()
     local Player = Bridge.Framework.PlayerDataC()
-    local pedCoords = GetEntityCoords(PlayerPedId())
+    local pedCoords = GetEntityCoords(cache.ped)
     local vehicle, vehcoords = lib.getClosestVehicle(pedCoords, 7, true)
     if vehicle ~= 0 then
         local plate = GetVehicleNumberPlateText(vehicle)
@@ -55,24 +57,23 @@ RegisterCommand('+vehlock', function()
             if locked == 1 or locked == 0 then
                 Bridge.Noti.Success(Locales.VehicleKeys.Locked)
                 SetVehicleDoorsLocked(vehicle, 2)
-                local ped = PlayerPedId()
-                if IsPedInAnyVehicle(ped, false) then return end
+                TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5, "lock", 0.5)
+                if IsPedInAnyVehicle(cache.ped, false) then return end
                 lib.requestAnimDict('anim@mp_player_intmenu@key_fob@')
-                TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 8.0, 8.0, -1, 52, 0, false, false, false)
-                --TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, Config.LockAnimSound, 0.5)
-                Wait(1500)
-                ClearPedTasks(ped)
+                TaskPlayAnim(cache.ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 8.0, 8.0, -1, 52, 0, false, false, false)
+                Wait(500)
+                ClearPedTasks(cache.ped)
                 RemoveAnimDict('anim@mp_player_intmenu@key_fob@')
             else
                 Bridge.Noti.Warn(Locales.VehicleKeys.Unlocked)
                 SetVehicleDoorsLocked(vehicle, 0)
-                local ped = PlayerPedId()
-                if IsPedInAnyVehicle(ped, false) then return end
+                TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5, "lock", 0.5)
+
+                if IsPedInAnyVehicle(cache.ped, false) then return end
                 lib.requestAnimDict('anim@mp_player_intmenu@key_fob@')
-                TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 8.0, 8.0, -1, 52, 0, false, false, false)
-                --TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, Config.LockAnimSound, 0.5)
-                Wait(1500)
-                ClearPedTasks(ped)
+                TaskPlayAnim(cache.ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 8.0, 8.0, -1, 52, 0, false, false, false)
+                Wait(500)
+                ClearPedTasks(cache.ped)
                 RemoveAnimDict('anim@mp_player_intmenu@key_fob@')
             end            
         else
@@ -82,7 +83,7 @@ RegisterCommand('+vehlock', function()
 end, false)
 
 local function tryVehLockpick()
-    local nearbyVeh = lib.getClosestVehicle(GetEntityCoords(PlayerPedId()), 2, false)
+    local nearbyVeh = lib.getClosestVehicle(GetEntityCoords(cache.ped), 2, false)
     if nearbyVeh == 0 then
         Bridge.Noti.Error(Locales.VehicleKeys.NoVehNearby)
         return
@@ -95,10 +96,23 @@ local function tryVehLockpick()
     local hasLockpick = lib.callback.await('kmack_lib:hasLockpick', false)
     local hasAdvLockpick = lib.callback.await('kmack_lib:hasAdvancedLockpick', false)
     if hasLockpick or hasAdvLockpick then
+        CreateThread(function()
+            --- lockpick animation without props for time above 
+            local animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@"
+            local animName = "machinic_loop_mechandplayer"
+            RequestAnimDict(animDict)
+            while not HasAnimDictLoaded(animDict) do
+                Wait(100)
+            end
+            TaskPlayAnim(cache.ped, animDict, animName, 8.0, 8.0, -1, 1, 0, false, false, false)
+            --
+        end)
         local success = Utils.SkillBarMinigame(Config.VehicleKeys.lockpickDiff, hasAdvLockpick)
+        ClearPedTasks(cache.ped)
         if success then
             -- set doors unlocked
             SetVehicleDoorsLocked(nearbyVeh, 0)
+            TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, 'lock', 0.5)
         else
             TriggerServerEvent('kmack_lib:vehicleKeys:failedLockpick', hasAdvLockpick)
             Bridge.Noti.Error(Locales.VehicleKeys.LockpickFailed)

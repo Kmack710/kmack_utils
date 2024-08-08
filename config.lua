@@ -19,6 +19,8 @@ Config = {
     },
     xpSystem = {
         enabled = true,
+        hideCriminalXpFromJobs = true, --- hides criminal xp from jobs listed below
+        nonCriminalJobs = {'police', 'ambulance', 'judge', 'sheriff'},
         --- if enabled look at modules/shared/xpSystem.lua
         --- to add ranks / new xp levels
     },
@@ -28,7 +30,7 @@ Config = {
         --- Keeping the plate in garage requires adding an export to your garage resource
         --- see the docs for info on how to do this.       
         fakePlateRemoval = true, --- by a job or item below
-        RemovalJob = 'police',
+        RemovalJobs ={'police', 'sheriff'},
         RemovalItem = 'fscrewdriver',
     },
     Elevators = { --- Simple elevator system with fade in/out

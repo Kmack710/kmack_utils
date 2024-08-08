@@ -27,6 +27,13 @@ local Locales = {
         CarJackingTitle = 'Car Jacking',
         CarJackingCode = '10-16',
         CarJackingMessage = 'Car Jacking in progress',
+    },
+    XpSystem = {
+        Level = 'Level: ',
+        XpMenuTitle = 'XP Menu',
+
+        OpenXpMenuDesc = 'Open the XP Menu',
+        OpenXpMenu = 'xp', --- Command name to open 
     }
 }
 

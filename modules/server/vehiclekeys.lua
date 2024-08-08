@@ -170,10 +170,10 @@ end
 
 --- since not all inventories allow us to item check on client
 lib.callback.register('kmack_lib:hasLockpick', function(source)
-    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.lockpickItem)
+    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.lockpickItem, 1)
 end)
 lib.callback.register('kmack_lib:hasAdvancedLockpick', function(source)
-    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.advLockpickItem)
+    return Bridge.Inventory.HasItem(source, Config.VehicleKeys.advLockpickItem, 1)
 end)
 
 if Bridge.Config.InventoryScript ~= 'ox' then --- if ox_inventory export its covered in the items.md

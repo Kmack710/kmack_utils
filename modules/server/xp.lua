@@ -1,26 +1,197 @@
 print('^4 [kmack_lib] ^2Loaded XP System^7')
 local xpConfig = require 'modules.shared.xpSystem'
 local Config = require 'config'
+local Bridge = exports.kmack_bridge:GetBridge()
+local Locales = require 'locales'
+
+RegisterNetEvent('kmack_lib:initXP', function()
+    local source = source
+    local Player = Bridge.Framework.PlayerDataS(source)
+    local Pid = Player.Pid
+    local currentXPdata = {}
+    local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
+        ['@pid'] = Pid
+    })
+    if result[1] then
+        currentXPdata = json.decode(result[1].data)
+        local newXpsToAdd = false
+        for k,v in pairs(xpConfig) do
+            print(currentXPdata[k])
+            if currentXPdata[k] == nil then
+                newXpsToAdd = true
+                currentXPdata[k] = {level = 0, xp = 0}
+            end
+        end
+        if newXpsToAdd then
+            MySQL.query('UPDATE kmack_xp SET data = @data WHERE pid = @pid', {
+                ['@pid'] = Pid,
+                ['@data'] = json.encode(currentXPdata)
+            })
+        end
+        print('^4 [kmack_lib] ^2Loaded XP Data for'..Player.Name..'^7')
+    else
+        for k,v in pairs(xpConfig) do
+            currentXPdata[k] = {level = 0, xp = 0}
+        end
+        MySQL.query('INSERT INTO kmack_xp (pid, data) VALUES (@pid, @data)', {
+            ['@pid'] = Pid,
+            ['@data'] = json.encode(currentXPdata)
+        })
+        print('^4 [kmack_lib] ^2Created XP Data for'..Player.Name..'^7')
+    end
+end)
+
+local function getLevelFromXP(xp, xptype)
+    local level = 0
+    if xpConfig[xptype] == nil then 
+        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        return false
+    end
+    local xpNeededPerLevel = xpConfig[xptype].xpPerLevel
+    local doubleXpReqPerLvl = xpConfig[xptype].doubleXpReqPerLvl
+    local xpNeeded = xpNeededPerLevel
+    --- if doubleXpReqPerLvl is true then we need to double EACH level
+    --- so if level 1 needs 100xp, level 2 needs 200xp, level 3 needs 400xp
+    if doubleXpReqPerLvl then
+        for i=1, xp do
+            xpNeeded = xpNeeded * 2
+            if xpNeeded <= xp then
+                level = level + 1
+            else
+                break
+            end
+        end
+    else
+        level = math.floor(xp / xpNeededPerLevel)
+        if level < 1 then
+            level = 0
+        end
+    end
+    return level
+end
+
+local function AddXp(source, xptype, amount)
+    local Player = Bridge.Framework.PlayerDataS(source)
+    local Pid = Player.Pid
+    local currentXPdata = {}
+    if xpConfig[xptype] == nil then 
+        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        return false
+    end
+    local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
+        ['@pid'] = Pid
+    })
+    --- check if level changes during this xp add so we can alert the player if they level up
+    local levelChanged = false
+    if result[1] then
+        currentXPdata = json.decode(result[1].data)
+        if currentXPdata[xptype] == nil then
+            currentXPdata[xptype] = {level = 0, xp = 0}
+        end
+        local currentXp = currentXPdata[xptype].xp
+        local currentLevel = currentXPdata[xptype].level
+        currentXPdata[xptype].xp = currentXp + amount
+        local newLevel = getLevelFromXP(currentXPdata[xptype].xp, xptype)
+        if newLevel > currentLevel then
+            levelChanged = true
+            currentXPdata[xptype].level = newLevel
+        end
+        MySQL.query('UPDATE kmack_xp SET data = @data WHERE pid = @pid', {
+            ['@pid'] = Pid,
+            ['@data'] = json.encode(currentXPdata)
+        })
+        if levelChanged then
+            if xpConfig[xptype].notifyOnLevelUp then
+                Bridge.Noti.Success(source, 'You have leveled up in '..xptype..' to '..xpConfig[xptype].ranks[newLevel])
+            end
+        end
+    end
+end
+
+local function RemoveXp(source, xptype, amount)
+    local Player = Bridge.Framework.PlayerDataS(source)
+    local Pid = Player.Pid
+    local currentXPdata = {}
+    if xpConfig[xptype] == nil then 
+        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        return
+    end
+    local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
+        ['@pid'] = Pid
+    })
+    if result[1] then
+        currentXPdata = json.decode(result[1].data)
+        --- make sure to check if the player lost a level if so lower the level by 1 if 0 keep at 0
+        local levelChange = false
+        
+        if currentXPdata[xptype] == nil then
+            currentXPdata[xptype] = {level = 0, xp = 0}
+        end
+        local currentXp = currentXPdata[xptype].xp
+        local currentLevel = currentXPdata[xptype].level
+        currentXPdata[xptype].xp = currentXp - amount
+        local newLevel = getLevelFromXP(currentXPdata[xptype].xp, xptype)
+        if newLevel < currentLevel then
+            levelChange = true
+            if newLevel < 1 then
+                newLevel = 0
+            end
+            currentXPdata[xptype].level = newLevel
+        end
+    end
+
+end
+
+local function GetXpLevel(source, xptype)
+    local Player = Bridge.Framework.PlayerDataS(source)
+    local Pid = Player.Pid
+    local currentXPdata = {}
+    if xpConfig[xptype] == nil then 
+        print('^4 [kmack_lib] ^1Error: ^7'..xptype..' is not a valid xp type')
+        return 0
+    end
+    local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
+        ['@pid'] = Pid
+    })
+    if result[1] then
+        currentXPdata = json.decode(result[1].data)
+        
+        if not currentXPdata[xptype] and xpConfig[xptype] ~= nil then
+            currentXPdata[xptype] = {level = 0, xp = 0}
+        end
+        return currentXPdata[xptype].level
+    end
+    return 0
+end
+
+lib.callback.register('kmack_lib:getXpLevel', function(source, xptype)
+    return GetXpLevel(source, xptype)
+end)
+lib.callback.register('kmack_lib:getMyXpData', function(source)
+    local Player = Bridge.Framework.PlayerDataS(source)
+    local Pid = Player.Pid
+    local currentXPdata = {}
+    local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
+        ['@pid'] = Pid
+    })
+    if result[1] then
+        currentXPdata = json.decode(result[1].data)
+        return currentXPdata
+    end
+    return false
+end)
+
+exports('AddXp', AddXp)
+exports('RemoveXp', RemoveXp)
+exports('GetXpLevel', GetXpLevel)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+lib.addCommand(Locales.XpSystem.OpenXpMenu, {
+    help = Locales.XpSystem.OpenXpMenuDesc,
+}, function(source, args, raw)
+    TriggerClientEvent('kmack_lib:xp:menu', source)
+end)
 
 
 
