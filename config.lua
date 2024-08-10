@@ -3,6 +3,7 @@ Config = {
         enabled = true,
         maxGroupSize = 5,
         addGroupsToRadial = true, -- adds groups to radial menu
+        useCommand = true, -- /groups to open group menu (can change command name in locales.lua)
     },
     VehicleKeys = {
         enabled = true,

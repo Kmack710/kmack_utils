@@ -44,6 +44,24 @@ local Locales = {
         PlateChangeDesc = 'Change the plate on the vehicle',
         NoFakePlate = 'There is no fake plate on this vehicle',
         RemoveFakePlate = 'Remove Fake Plate',
+    },
+    Groups = {
+        Created = 'Group Created',
+        JoinedGroup = 'You have joined the group',
+        HasJoinedGroup = ' has joined the group',
+        GroupIsFull = 'Group is full',
+        GroupMenu = 'Group Menu',
+        InviteAMember = 'Invite a member to the group',
+        IdOfMemberToInvite = 'ID of the member to invite',
+        LeaveGroup = 'Leave Group',
+        GroupInvite = 'Group Invite',
+        BeenInvited = 'You have been invited to a group',
+        Accept = 'Accept',
+        Decline = 'Decline',
+        LeftGroup = 'You have left the group',
+        DisbandedGroup = 'Group has been disbanded',
+        CommandName = 'groups',
+        CommandDesc = 'Join or make a group!',
     }
 }
 

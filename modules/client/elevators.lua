@@ -53,14 +53,16 @@ end
 local function onEnter(id, floor)
     local radialItems = {}
     for k,v in pairs(Elevators[id].floors) do
+        local label = v.label
         if k == floor then
-            v.label = 'Current Floor'
+            label = 'Current Floor'
         end
         table.insert(radialItems, {
-            label = v.label,
+            label = label,
             icon = 'elevator',
             onSelect = function()
                 takeElevator(id, k, floor)
+                onEnter(id, k)
             end
         })
     end
@@ -80,6 +82,7 @@ end
 
 local function onExit()
     lib.removeRadialItem('elevators')
+    lib.removeRadialItem('elevator_menu')
 end
 
 local function createElevatorZone(id, floor)
@@ -99,9 +102,9 @@ AddEventHandler('kmack_bridge:playerLoaded', function(source)
 end)
 
 CreateThread(function()
-    while not isPlayerLoaded do
-        Wait(100)
-    end
+     while not isPlayerLoaded do
+         Wait(100)
+     end
     for k,v in pairs(Elevators) do
         for k2, v2 in pairs(v.floors) do 
             if Config.Elevators.method == 'target' then
