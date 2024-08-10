@@ -34,6 +34,16 @@ local Locales = {
 
         OpenXpMenuDesc = 'Open the XP Menu',
         OpenXpMenu = 'xp', --- Command name to open 
+    },
+    FakePlates = {
+        NoVehNearby = 'No vehicle nearby',
+        PlateTaken = 'You cannot use that plate try another, or remove the fake plate on currently',
+        PlateChanged = 'Plate Changed',
+        PlateRemoved = 'Plate Removed',
+        PlateChangeTitle = 'Change Plate',
+        PlateChangeDesc = 'Change the plate on the vehicle',
+        NoFakePlate = 'There is no fake plate on this vehicle',
+        RemoveFakePlate = 'Remove Fake Plate',
     }
 }
 

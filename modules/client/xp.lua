@@ -27,10 +27,8 @@ local function convertXpToPercent(xptype, xp)
                 lastLvlXp = i
             end
         end
-        print('XP needed: '..xpNeeded..' - Last level xp: '..lastLvlXp)
         --- use lastlvlxp and xpneeded to calculate the % of the current level the person is through
         local percent = ((xp - lastLvlXp) / (xpNeeded - lastLvlXp)) * 100
-        print(percent)
         percent = math.floor(percent)
         return percent
     else
@@ -39,7 +37,6 @@ local function convertXpToPercent(xptype, xp)
         --- use lastlvlxp and xpneeded to calculate the % of the current level the person is through
         local percent = (xp / xpNeeded) * 100
         percent = math.floor(percent)
-        print(percent)
         return percent
     end
 end
@@ -57,10 +54,8 @@ RegisterNetEvent('kmack_utils:xp:menu', function()
     local Player = Bridge.Framework.PlayerDataC()
     local myXPData = lib.callback.await('kmack_utils:getMyXpData', false)
     local menuOptions = {}
-    print(Player.Job.name)
     for k,v in pairs(myXPData) do
         local percent = convertXpToPercent(k, v.xp)
-        print(percent)
         --- check the jobs from config and dont add ones that are set to criminal
         --- if they are criminal then we dont want to show them in the xp menu for the jobs in Config.
         if Config.xpSystem.hideCriminalXpFromJobs then

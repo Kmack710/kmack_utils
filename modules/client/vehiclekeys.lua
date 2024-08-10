@@ -2,7 +2,6 @@ local Config = require 'config'
 local Bridge = exports.kmack_bridge:GetBridge()
 local Locales = require 'locales'
 local Utils = require 'modules.client.utils'
---- kmack_utils:vehicleKeys:hasKeys
 
 local function hasKeys(plate)
     return lib.callback.await('kmack_utils:vehicleKeys:hasKeys', false, plate)
@@ -107,10 +106,15 @@ local function tryVehLockpick()
             TaskPlayAnim(cache.ped, animDict, animName, 8.0, 8.0, -1, 1, 0, false, false, false)
             --
         end)
-        local success = Utils.SkillBarMinigame(Config.VehicleKeys.lockpickDiff, hasAdvLockpick)
+        local success
+        local isVehicleOwned = lib.callback.await('kmack_utils:isVehicleOwned', false, plate)
+        if isVehicleOwned then
+            success = Utils.OwnedVehicleLockpick()
+        else
+            success = Utils.SkillBarMinigame(Config.VehicleKeys.lockpickDiff, hasAdvLockpick)
+        end
         ClearPedTasks(cache.ped)
         if success then
-            -- set doors unlocked
             SetVehicleDoorsLocked(nearbyVeh, 0)
             TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, 'lock', 0.5)
         else
@@ -138,3 +142,4 @@ if Config.VehicleKeys.disableAutoOnOff then
 end
 
 exports('tryVehLockpick', tryVehLockpick)
+exports('hasKeys', hasKeys)

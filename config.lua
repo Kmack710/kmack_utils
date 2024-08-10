@@ -2,6 +2,7 @@ Config = {
     GroupSystem = {
         enabled = true,
         maxGroupSize = 5,
+        addGroupsToRadial = true, -- adds groups to radial menu
     },
     VehicleKeys = {
         enabled = true,
@@ -26,10 +27,7 @@ Config = {
     },
     FakePlates = {
         enabled = true,
-        keepPlateInGarage = true,
-        --- Keeping the plate in garage requires adding an export to your garage resource
-        --- see the docs for info on how to do this.       
-        fakePlateRemoval = true, --- by a job or item below
+        fakePlateRemoval = true, --- by a job with item below
         RemovalJobs = {'police', 'sheriff'},
         RemovalItem = 'fscrewdriver',
     },

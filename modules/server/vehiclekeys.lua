@@ -136,11 +136,11 @@ RegisterNetEvent('kmack_utils:vehicleKeys:failedLockpick', function(advLockpick)
     local source = source
     local randomChance = math.random(1, 100)
     if advLockpick then
-        if randomChance <= Config.VehicleKeys.advLockpickBreakChance then
+        if randomChance <= Config.VehicleKeys.chanceToRemoveAdvLockpick then
             Bridge.Inventory.RemoveItem(source, Config.VehicleKeys.advLockpickItem, 1)
         end
     else
-        if randomChance <= Config.VehicleKeys.lockpickBreakChance then
+        if randomChance <= Config.VehicleKeys.chanceToRemoveLockpick then
             Bridge.Inventory.RemoveItem(source, Config.VehicleKeys.lockpickItem, 1)
         end
     end
@@ -168,12 +168,17 @@ if Config.VehicleKeys.lockAllLocalVehicles then
 end
 
 
+
 --- since not all inventories allow us to item check on client
 lib.callback.register('kmack_utils:hasLockpick', function(source)
     return Bridge.Inventory.HasItem(source, Config.VehicleKeys.lockpickItem, 1)
 end)
 lib.callback.register('kmack_utils:hasAdvancedLockpick', function(source)
     return Bridge.Inventory.HasItem(source, Config.VehicleKeys.advLockpickItem, 1)
+end)
+
+lib.callback.register('kmack_utils:isVehicleOwned', function(source, plate)
+    return Utils.CheckIfVehicleIsOwned(plate)
 end)
 
 if Bridge.Config.InventoryScript ~= 'ox' then --- if ox_inventory export its covered in the items.md

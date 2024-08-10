@@ -18,7 +18,6 @@ function Utils.SkillBarMinigame(diff, isAdv)
         width = 15
     end
     return exports['SN-Hacking']:SkillBar(time, width, rounds)
-
 end
 
 function Utils.HotWireMinigame(diff, isAdv)
@@ -37,7 +36,11 @@ function Utils.HotWireMinigame(diff, isAdv)
 end
 
 
-
+function Utils.OwnedVehicleLockpick()
+    --- This is so when you lockpick an owned vehicle, you can make it harder since stealing a player vehicle should always be harder
+    return exports['SN-Hacking']:NumberUp(28, 3, 2, 30000, 5000)
+    --NumberUp(keys(number), rounds(number), tries(number), time(milliseconds), shuffleTime(milliseconds))
+end
 
 
 

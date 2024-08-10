@@ -16,7 +16,6 @@ RegisterNetEvent('kmack_utils:initXP', function()
         currentXPdata = json.decode(result[1].data)
         local newXpsToAdd = false
         for k,v in pairs(xpConfig) do
-            print(currentXPdata[k])
             if currentXPdata[k] == nil then
                 newXpsToAdd = true
                 currentXPdata[k] = {level = 0, xp = 0}
