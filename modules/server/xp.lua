@@ -49,8 +49,6 @@ local function getLevelFromXP(xp, xptype)
     local xpNeededPerLevel = xpConfig[xptype].xpPerLevel
     local doubleXpReqPerLvl = xpConfig[xptype].doubleXpReqPerLvl
     local xpNeeded = xpNeededPerLevel
-    --- if doubleXpReqPerLvl is true then we need to double EACH level
-    --- so if level 1 needs 100xp, level 2 needs 200xp, level 3 needs 400xp
     if doubleXpReqPerLvl then
         for i=1, xp do
             xpNeeded = xpNeeded * 2
@@ -80,7 +78,6 @@ local function AddXp(source, xptype, amount)
     local result = MySQL.query.await('SELECT * FROM kmack_xp WHERE pid = @pid', {
         ['@pid'] = Pid
     })
-    --- check if level changes during this xp add so we can alert the player if they level up
     local levelChanged = false
     if result[1] then
         currentXPdata = json.decode(result[1].data)
@@ -120,7 +117,6 @@ local function RemoveXp(source, xptype, amount)
     })
     if result[1] then
         currentXPdata = json.decode(result[1].data)
-        --- make sure to check if the player lost a level if so lower the level by 1 if 0 keep at 0
         local levelChange = false
         
         if currentXPdata[xptype] == nil then
@@ -191,19 +187,6 @@ lib.addCommand(Locales.XpSystem.OpenXpMenu, {
 }, function(source, args, raw)
     TriggerClientEvent('kmack_utils:xp:menu', source)
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 --- Create sql table if not already made.

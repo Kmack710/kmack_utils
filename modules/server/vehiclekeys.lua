@@ -28,8 +28,6 @@ local function giveKeysPerm(source, plate)
         vehicleKeys[plate] = {}
     end
     table.insert(vehicleKeys[plate], Player.Pid)
-    --- get sql table first so we dont add temp keys to the database
-    --- then add the keys to the database for permanent storage
     local currentDBKeys = MySQL.query.await('SELECT * FROM kmack_vehpermkeys WHERE plate = @plate', {
         ['@plate'] = plate
     })
