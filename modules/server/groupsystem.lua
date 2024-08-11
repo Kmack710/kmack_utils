@@ -113,7 +113,9 @@ lib.callback.register('kmack_utils:group:isGroupLeader', function(source)
     return false
 end)
 
-lib.callback.register('kmack_utils:groups:getGroupMembers', function(groupId)
+lib.callback.register('kmack_utils:groups:getGroupMembers', function(source, groupId)
+    print(groupId)
+    print(json.encode(Groups))
     if not Groups[groupId] then return false end
     return Groups[groupId]
 end)
