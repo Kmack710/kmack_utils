@@ -78,7 +78,7 @@ lib.addCommand(Locales.Commands.GiveKeys, {
     local plate = GetVehicleNumberPlateText(cloestVeh)
     local target = args.target
     if not target then
-        local ltarget, ab, abc = lib.getClosestPlayer(GetEntityCoords(GetPlayerPed(source)), 5)
+        local ltarget, ab, abc = lib.getClosestPlayer(GetEntityCoords(GetPlayerPed(source)), 5, true)
         target = ltarget
     end
     if hasKeys(source, plate) then
