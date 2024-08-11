@@ -78,9 +78,10 @@ lib.addCommand(Locales.Commands.GiveKeys, {
     local plate = GetVehicleNumberPlateText(cloestVeh)
     local target = args.target or false
     if not target then
-        local ltarget, ab, abc = lib.getClosestPlayer(GetEntityCoords(GetPlayerPed(source)), 5.0, false)
-        target = ltarget
+        local ltarget, ab, abc = lib.getNearbyPlayers(GetEntityCoords(GetPlayerPed(source)), 5.0)
+        target = ltarget[2] or source
     end
+    print(target)
     if hasKeys(source, plate) then
         giveKeys(target, plate)
         Bridge.Noti.Success(source, Locales.VehicleKeys.KeysGiven)
