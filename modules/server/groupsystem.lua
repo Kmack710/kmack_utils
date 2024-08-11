@@ -121,7 +121,7 @@ lib.callback.register('kmack_utils:groups:getGroupMembers', function(source, gro
     return Groups[groupId]
 end)
 
-lib.callback.register('kmack_bridge:getPlayerName', function(Pid)
+lib.callback.register('kmack_utils:getPlayerName', function(source, Pid)
     local Player = Bridge.Framework.GetPlayerFromPidS(Pid)
     if not Player then return false end
     return Player.Name
