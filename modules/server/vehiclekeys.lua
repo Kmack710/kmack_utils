@@ -76,9 +76,9 @@ lib.addCommand(Locales.Commands.GiveKeys, {
 }, function(source, args, raw)
     local cloestVeh = lib.getClosestVehicle(GetEntityCoords(GetPlayerPed(source)), 5, true)
     local plate = GetVehicleNumberPlateText(cloestVeh)
-    local target = args.target
+    local target = args.target or false
     if not target then
-        local ltarget, ab, abc = lib.getClosestPlayer(GetEntityCoords(GetPlayerPed(source)), 5, false)
+        local ltarget, ab, abc = lib.getClosestPlayer(GetEntityCoords(GetPlayerPed(source)), 5.0, false)
         target = ltarget
     end
     if hasKeys(source, plate) then
