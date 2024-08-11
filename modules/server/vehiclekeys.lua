@@ -79,7 +79,7 @@ lib.addCommand(Locales.Commands.GiveKeys, {
     local target = args.target or false
     if not target then
         local ltarget, ab, abc = lib.getNearbyPlayers(GetEntityCoords(GetPlayerPed(source)), 5.0)
-        target = ltarget[2] or source
+        target = ltarget[2].id or source
     end
     print(target)
     if hasKeys(source, plate) then
