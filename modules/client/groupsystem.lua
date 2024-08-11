@@ -11,6 +11,8 @@ local function openGroupMenu()
         local MenuOptions = {}
         local GroupMembers = lib.callback.await('kmack_utils:groups:getGroupMembers', false, myGroup)
         local groupSize = #GroupMembers
+        print(groupSize)
+        print(isGroupLeader)
         local Player = Bridge.Framework.PlayerDataC()
         if isGroupLeader then
             for k, v in pairs(GroupMembers) do
