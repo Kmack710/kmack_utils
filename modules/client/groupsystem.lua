@@ -9,7 +9,7 @@ local function openGroupMenu()
     else
         local isGroupLeader = lib.callback.await('kmack_utils:group:isGroupLeader', false)
         local MenuOptions = {}
-        local GroupMembers = lib.callback.await('kmack_utils:groups:getGroupMembers', myGroup)
+        local GroupMembers = lib.callback.await('kmack_utils:groups:getGroupMembers', false, myGroup)
         local groupSize = #GroupMembers
         local Player = Bridge.Framework.PlayerDataC()
         if isGroupLeader then
