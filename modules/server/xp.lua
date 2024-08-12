@@ -27,7 +27,6 @@ RegisterNetEvent('kmack_utils:initXP', function()
                 ['@data'] = json.encode(currentXPdata)
             })
         end
-        print('^4 [kmack_utils] ^2Loaded XP Data for'..Player.Name..'^7')
     else
         for k,v in pairs(xpConfig) do
             currentXPdata[k] = {level = 0, xp = 0}
@@ -36,7 +35,6 @@ RegisterNetEvent('kmack_utils:initXP', function()
             ['@pid'] = Pid,
             ['@data'] = json.encode(currentXPdata)
         })
-        print('^4 [kmack_utils] ^2Created XP Data for'..Player.Name..'^7')
     end
 end)
 

@@ -114,9 +114,6 @@ lib.callback.register('kmack_utils:group:isGroupLeader', function(source)
 end)
 
 lib.callback.register('kmack_utils:groups:getGroupMembers', function(source, groupId)
-    print(groupId)
-    print(json.encode(Groups))
-    print(#Groups[groupId])
     if Groups[groupId] == nil then return false end
     return Groups[groupId]
 end)
